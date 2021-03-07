@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import EndCall from './components/EndCall';
 import HomeScreen from './components/HomeScreen';
 import ConfigurationScreen from './containers/Configuration';
-import { v1 as createGUID } from 'uuid';
+//import { v1 as createGUID } from 'uuid';
 import { loadTheme, initializeIcons } from '@fluentui/react';
 import { utils } from './Utils/Utils';
 
@@ -39,10 +39,16 @@ const App = () => {
     return urlParams.get('groupId');
   };
 
+
+  const getLobbyId = () => {
+    const lobby_gid = '6d7f87a0-7eca-11eb-ba55-37bd3b8b2fe2';
+    return lobby_gid;
+  };
+
   const getGroupId = () => {
     if (groupId) return groupId;
     const uri_gid = getGroupIdFromUrl();
-    const gid = uri_gid == null || uri_gid === '' ? createGUID() : uri_gid;
+    const gid = uri_gid == null || uri_gid === '' ? getLobbyId() : uri_gid;
     console.log('The group id is ' + gid);
     setGroupId(gid);
     return gid;
@@ -78,7 +84,7 @@ const App = () => {
     } else if (page === 'endCall') {
       return (
         <EndCall
-          message={ store.getState().calls.attempts > 3 ? 'Unable to join the call' : 
+          message={ store.getState().calls.attempts > 3 ? 'Unable to join the call' :
           'You left the call'}
           rejoinHandler={() => {
             setPage('call');

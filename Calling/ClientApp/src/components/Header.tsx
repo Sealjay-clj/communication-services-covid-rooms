@@ -16,6 +16,7 @@ import {
 } from './styles/Header.styles';
 import { ParticipantStream } from 'core/reducers';
 
+const currentLobbyStatus = 'Back to lobby in 2:00.';
 export interface HeaderProps {
   selectedPane: CommandPanelTypes;
   setSelectedPane: any;
@@ -82,6 +83,7 @@ export default (props: HeaderProps): JSX.Element => {
 
   return (
     <Stack id="header" className={props.screenWidth > Constants.MINI_HEADER_WINDOW_WIDTH ? headerContainer : headerCenteredContainer}>
+      {currentLobbyStatus}
       <Pivot
         onKeyDownCapture={(e) => {
           if ((e.target as HTMLElement).id === CommandPanelTypes.People && e.keyCode === 39) e.preventDefault();

@@ -37,6 +37,10 @@ namespace Calling
                 );
             });
 
+            var lobbyStateService = new LobbyStateService(Configuration);
+            services.AddSingleton((LobbyStateService)lobbyStateService);
+            services.AddHostedService<LobbyTimerService>();
+
             services.AddControllers();
 
             // In production, the React files will be served from this directory

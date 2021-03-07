@@ -35,7 +35,7 @@ export default (props: CommandPanelProps): JSX.Element => {
       <Stack.Item className={paneHeaderStyle}>
         <div className={paneHeaderTextStyle}>{props.selectedPane}</div>
       </Stack.Item>
-      
+
         {props.selectedPane === CommandPanelTypes.People && (
           <Stack.Item styles={fullHeightStyles}>
             <ParticipantStack />
@@ -61,7 +61,7 @@ export default (props: CommandPanelProps): JSX.Element => {
           </div>
           </Stack.Item>
         )}
-      
+
     </Stack>
   );
 };

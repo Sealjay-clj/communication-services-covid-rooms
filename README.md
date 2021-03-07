@@ -1,14 +1,16 @@
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fcommunication-services-web-calling-hero%2Fmain%2Fdeploy%2Fazuredeploy.json)
+# Mixer Calling Samoke
 
-# Group Calling Sample
+This application is based on the Azure Communication Services Calling hero sample. Documentation for the sample can be found on [Microsoft Docs](https://docs.microsoft.com/azure/communication-services/samples/calling-hero-sample).
 
-This is a sample application to show how the Azure Communication Services Calling Web SDK can be used to build a group calling experience. 
-The client-side application is a React based user interface which uses Redux for handling complex state while leveraging Microsoft Fluent UI. 
+### Original App
+The client-side application is a React based user interface which uses Redux for handling complex state while leveraging Microsoft Fluent UI.
 Powering this front-end is a C# web application powered by ASP.NET Core to connect this application with Azure Communication Services.
 
-Additional documentation for this sample can be found on [Microsoft Docs](https://docs.microsoft.com/azure/communication-services/samples/calling-hero-sample).
-
-![Homepage](./Media/homepage-sample-calling.png)
+### This Aplication
+All users end up in the lobby defined in the **Calling/appsetting.json** `MainLobbyGuid` variable.
+The application doesn't mix people up until the jumble is enabled.
+Starting the jumble
+People arrive in the lobby, and if they miss a mixer, they have to wait until the next jumble.
 
 ## Prerequisites
 
@@ -34,7 +36,7 @@ Additional documentation for this sample can be found on [Microsoft Docs](https:
 1. Open an instance of PowerShell, Windows Terminal, Command Prompt or equivalent and navigate to the directory that you'd like to clone the sample to.
 2. `git clone https://github.com/Azure-Samples/communication-services-web-calling-hero.git`
 3. Get the `Connection String` from the Azure portal. For more information on connection strings, see [Create an Azure Communication Resources](https://docs.microsoft.com/azure/communication-services/quickstarts/create-communication-resource)
-4. Once you get the `Connection String`, add the connection string to the **Calling/appsetting.json** file found under the Calling folder. Input your connection string in the variable: `ResourceConnectionString`. 
+4. Once you get the `Connection String`, add the connection string to the **Calling/appsetting.json** file found under the Calling folder. Input your connection string in the variable: `ResourceConnectionString`.
 
 ## Locally deploying the sample app
 
@@ -44,7 +46,7 @@ Additional documentation for this sample can be found on [Microsoft Docs](https:
 ### Troubleshooting
 
 1. Solution doesn\'t build, it throws errors during NPM installation/build
-	
+
 	Clean/rebuild the C# solution
 
 2. The app shows an "Unsupported browser" screen but I am on a [supported browser](https://docs.microsoft.com/en-us/azure/communication-services/concepts/voice-video-calling/calling-sdk-features#calling-client-library-browser-support).

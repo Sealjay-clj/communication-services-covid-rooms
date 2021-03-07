@@ -37,7 +37,7 @@ export default (props: EndCallProps): JSX.Element => {
           </DefaultButton>
         </Stack>
         <div className={bottomStackFooterStyle}>
-          <a href="https://github.com/Azure/Communication/issues">Give Feedback</a>&nbsp;on this sample app on Github
+        Based on the <a href="https://github.com/Azure/Communication/issues">Azure Communication</a> sample app.
         </div>
       </Stack>
     </Stack>

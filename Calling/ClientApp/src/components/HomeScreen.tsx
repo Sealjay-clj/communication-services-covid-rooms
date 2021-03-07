@@ -31,13 +31,14 @@ const imageStyleProps: IImageStyles = {
 export default (props: HomeScreenProps): JSX.Element => {
   const iconName = 'SkypeCircleCheck';
   const imageProps = { src: heroSVG.toString() };
-  const headerTitle = 'Exceptionally simple video calling';
-  const startCallButtonText = 'Start a call';
+  const headerTitle = 'Video Mixer';
+  const startCallButtonText = 'Enter Lobby';
   const listItems = [
-    'Customize with your web stack',
-    'Connect with users with seamless collaboration across web',
-    'High quality, low latency capabilities for an uninterrupted calling experience',
-    'Learn about this'
+    'Meet everyone in the lobby',
+    'Mix with colleagues selected at random',
+    'Receive conversation prompts',
+    'Get to know people!',
+    'Based on the Azure Communication Services video calling'
   ];
   return (
     <Stack horizontal horizontalAlign="center" verticalAlign="center" tokens={containerTokens}>
@@ -53,9 +54,12 @@ export default (props: HomeScreenProps): JSX.Element => {
                 </li>
                 <li className={listItemStyle}>
                     <Icon className={iconStyle} iconName={iconName} /> {listItems[2]}
+            </li>
+            <li className={listItemStyle}>
+                    <Icon className={iconStyle} iconName={iconName} /> {listItems[3]}
                 </li>
                 <li className={listItemStyle}>
-                    <Icon className={iconStyle} iconName={iconName} /> {listItems[3]}{' '}
+                    <Icon className={iconStyle} iconName={iconName} /> {listItems[4]}{' '}
                     <a href="https://docs.microsoft.com/en-us/azure/communication-services/samples/calling-hero-sample?pivots=platform-web">sample</a>
                 </li>
             </ul>
@@ -66,7 +70,7 @@ export default (props: HomeScreenProps): JSX.Element => {
         </PrimaryButton>
       </Stack>
       <Image
-        alt="Welcome to the Azure Communication Services Calling sample app"
+        alt="The intro image from the WAzure Communication Services Calling sample app"
         className={imgStyle}
         styles={imageStyleProps}
         {...imageProps}
