@@ -5,12 +5,14 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { reducer } from './core/reducers';
 import thunk from 'redux-thunk';
+import TransferRoom from './components/TransferRoom';
 import EndCall from './components/EndCall';
 import HomeScreen from './components/HomeScreen';
 import ConfigurationScreen from './containers/Configuration';
-//import { v1 as createGUID } from 'uuid';
+import { v1 as createGUID } from 'uuid';
 import { loadTheme, initializeIcons } from '@fluentui/react';
 import { utils } from './Utils/Utils';
+import { endCall } from 'core/sideEffects';
 
 const sdkVersion = require('../package.json').dependencies['@azure/communication-calling'];
 const lastUpdated = `Last Updated ${utils.getBuildTime()} with @azure/communication-calling:${sdkVersion}`;
@@ -21,9 +23,15 @@ initializeIcons();
 const store = createStore(reducer, applyMiddleware(thunk));
 const App = () => {
   const [page, setPage] = useState('home');
-  const [groupId, setGroupId] = useState('');
+  const [currentGroupId, setCurrentGroupId] = useState('6d7f87a0-7eca-11eb-ba55-37bd3b8b2fe2');
+  const [userGuid, setUserGuid] = useState('');
   const [screenWidth, setScreenWidth] = useState(0);
-
+  const [stateString, setStateString] = useState('still connecting to server');
+  window.setInterval(() => {
+    try {
+      setPollingState(utils.getLobbyStatus(userGuid));
+    } catch (e) { }
+    }, 3000);
   useEffect(() => {
     const setWindowWidth = () => {
       const width = typeof window !== 'undefined' ? window.innerWidth : 0;
@@ -34,24 +42,47 @@ const App = () => {
     return () => window.removeEventListener('resize', setWindowWidth);
   }, []);
 
-  const getGroupIdFromUrl = () => {
+  const setPollingState = (lobbyPollObject: any) => {
+    lobbyPollObject.then(async function (results: any) {
+      let stateString = results["stateString"];
+      let currentGroup = currentGroupId;
+      let serverRoomId = results["userRoom"];
+      setStateString(stateString);
+      console.log('page: ' + page);
+      if (page === "call" || page === "configuration") {
+        setCurrentGroupId(results["userRoom"]);
+        if (serverRoomId !== currentGroup) {
+          setPage('transfer');
+        }
+      }
+      if (page === "transfer") {
+        let currentCall = store.getState().calls.call!;
+        if (currentGroupId === serverRoomId) {
+          if (currentCall !== undefined) {
+            endCall(currentCall, { forEveryone: false });
+          }
+          setPage('call');
+        }
+      }
+      console.log(results);
+    });
+
+  };
+
+  const isUserConfigured = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('groupId');
+    let configured = urlParams.get('configured');
+    if (configured === 'init') {
+      return true;
+    } else {
+      return false;
+    }
   };
 
-
-  const getLobbyId = () => {
-    const lobby_gid = '6d7f87a0-7eca-11eb-ba55-37bd3b8b2fe2';
-    return lobby_gid;
-  };
-
-  const getGroupId = () => {
-    if (groupId) return groupId;
-    const uri_gid = getGroupIdFromUrl();
-    const gid = uri_gid == null || uri_gid === '' ? getLobbyId() : uri_gid;
-    console.log('The group id is ' + gid);
-    setGroupId(gid);
-    return gid;
+  const setPageSansTransfer = (pageName:string) => {
+    if (page!=="transfer") {
+      setPage(pageName);
+    }
   };
 
   const getContent = () => {
@@ -59,7 +90,8 @@ const App = () => {
       return (
         <HomeScreen
           startCallHandler={() => {
-            window.history.pushState({}, document.title, window.location.href + '?groupId=' + getGroupId());
+            window.history.pushState({}, document.title, window.location.href.split('?')[0] + '?configured=init');
+            setPage('call');
           }}
         />
       );
@@ -68,17 +100,26 @@ const App = () => {
         <ConfigurationScreen
           startCallHandler={() => setPage('call')}
           unsupportedStateHandler={() => setPage('error')}
-          endCallHandler={() => setPage('endCall')}
-          groupId={getGroupId()}
+          endCallHandler={() => setPageSansTransfer('endCall')}
+          groupId={currentGroupId}
+          currentGroupId={currentGroupId}
           screenWidth={screenWidth}
         />
       );
     } else if (page === 'call') {
       return (
         <GroupCall
-          endCallHandler={() => setPage('endCall')}
-          groupId={getGroupId()}
+          endCallHandler={() => setPageSansTransfer('endCall')}
+          groupId={currentGroupId}
           screenWidth={screenWidth}
+          stateString={stateString}
+          currentPage={page}
+        />
+      );
+    } else if (page === 'transfer') {
+      return (
+        <TransferRoom
+          message='Transferring you between rooms'
         />
       );
     } else if (page === 'endCall') {
@@ -106,16 +147,20 @@ const App = () => {
     }
   };
 
-  if (getGroupIdFromUrl() && page === 'home') {
+  if (isUserConfigured() && page === 'home') {
     setPage('configuration');
   }
-
+  if (userGuid === '') {
+    let newGuid = createGUID();
+    setUserGuid(newGuid);
+    console.log('Set user guid');
+  }
   return <Provider store={store}>{getContent()}</Provider>;
 };
 
 window.setTimeout(() => {
   try {
-    console.log(`Azure Communication Services sample group calling app: ${lastUpdated}`);
+    console.log(`Mixer app based on Azure Sample: ${lastUpdated}`);
   } catch (e) {}
 }, 0);
 

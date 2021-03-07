@@ -2,18 +2,16 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-
 namespace Calling
 {
-    public abstract class LobbyTimerService : IHostedService
+    public class LobbyTimerService : IHostedService
     {
-        private readonly LobbyTimerService lobbyTimerService;
         private Timer _timer;
         private LobbyStateService _lobbyStateService;
 
-        public LobbyTimerService(LobbyTimerService lobbyTimerService, LobbyStateService _lobbyStateService)
+        public LobbyTimerService(LobbyStateService lobbyStateService)
         {
-            this.lobbyTimerService = lobbyTimerService;
+            this._lobbyStateService = lobbyStateService;
         }
 
         public virtual Task StartAsync(CancellationToken cancellationToken)

@@ -70,7 +70,7 @@ export default (props: HomeScreenProps): JSX.Element => {
         </PrimaryButton>
       </Stack>
       <Image
-        alt="The intro image from the WAzure Communication Services Calling sample app"
+        alt="The intro image from the Azure Communication Services Calling sample app"
         className={imgStyle}
         styles={imageStyleProps}
         {...imageProps}

@@ -107,7 +107,7 @@ export const initCallClient = (unsupportedStateHandler: () => void, endCallHandl
 
       const userToken = tokenResponse.value.token;
 
-      var callClient;
+      var callClient = undefined;
 
       // check if chrome on ios OR firefox browser
       if (utils.isOnIphoneAndNotSafari() || utils.isUnsupportedBrowser()) {
@@ -116,7 +116,9 @@ export const initCallClient = (unsupportedStateHandler: () => void, endCallHandl
       }
 
       try {
-        callClient = new CallClient(options);
+        if (callClient === undefined) {
+          callClient = new CallClient(options);
+        }
       } catch (e) {
         unsupportedStateHandler();
         return;
@@ -127,6 +129,7 @@ export const initCallClient = (unsupportedStateHandler: () => void, endCallHandl
       }
 
       const tokenCredential = new AzureCommunicationUserCredential(userToken);
+
       let callAgent: CallAgent = await callClient.createCallAgent(tokenCredential);
 
       if (callAgent === undefined) {

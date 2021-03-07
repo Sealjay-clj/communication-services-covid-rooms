@@ -44,6 +44,9 @@ export interface GroupCallProps {
   videoDeviceList: VideoDeviceInfo[];
   screenWidth: number;
   shareScreen: boolean;
+  stateString: string;
+  currentPage: string;
+  currentGroupId: string;
   setAudioDeviceInfo(deviceInfo: AudioDeviceInfo): void;
   setVideoDeviceInfo(deviceInfo: VideoDeviceInfo): void;
   setLocalVideoStream(stream: LocalVideoStream | undefined): void;
@@ -63,15 +66,21 @@ export default (props: GroupCallProps): JSX.Element => {
   const { callAgent, call, groupId, joinGroup, attempts } = props;
 
   useEffect(() => {
-    if (attempts > 3) {
+    if (props.currentPage === "transfer"||attempts > 3) {
+      if (call !== undefined) {
+        call.hangUp({ forEveryone: false });
+      }
       props.endCallHandler();
-      // after we switch the screen on the next tick we want to 
+      // after we switch the screen on the next tick we want to
       // set the attempts back to 0
       setTimeout(()=> props.setAttempts(0), 0)
     }
+    if (props.currentGroupId != groupId) {
+      joinGroup();
+    }
     if (callAgent && !call) {
       joinGroup();
-      document.title = `${groupId} group call sample`;
+      document.title = `${groupId} mixer`;
     }
   }, [callAgent, call, groupId, joinGroup]);
 
@@ -83,6 +92,7 @@ export default (props: GroupCallProps): JSX.Element => {
           setSelectedPane={setSelectedPane}
           endCallHandler={props.endCallHandler}
           screenWidth={props.screenWidth}
+          stateString={props.stateString}
         />
       </Stack.Item>
       <Stack.Item styles={containerStyles}>

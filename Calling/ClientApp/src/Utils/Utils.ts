@@ -22,6 +22,13 @@ export const utils = {
     }
     throw new Error('Invalid token response');
   },
+  getLobbyStatus: async (userGuid: string): Promise<any> => {
+    const response = await fetch('/lobbyStatus?userGuid='+userGuid);
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Invalid lobby status');
+  },
   isSelectedAudioDeviceInList(selected: AudioDeviceInfo, list: AudioDeviceInfo[]): boolean {
     return list.filter((item) => item.name === selected.name).length > 0;
   },
